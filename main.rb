@@ -7,17 +7,32 @@ if Gem.win_platform?
   end
 end
 
-require_relative "lib/products"
-require_relative "lib/films"
-require_relative "lib/books"
+require_relative 'lib/product'
+require_relative 'lib/book'
+require_relative 'lib/film'
+require_relative 'lib/disk'
+require_relative 'lib/product_collection'
 
-products = []
+collection = ProductCollection.from_dir(File.dirname(__FILE__) + '/data')
 
-products << Films.new(title: 'Леон', year: '1994', director: 'Люк Бессон', price: 990, amount: 5)
-products << Films.new(title: 'Дурак', year: '2014', director: 'Юрий Быков', price: 390, amount: 1)
-products << Books.new(title: 'Идиот', genre: 'роман', author: 'Федор Достоевский', price: 1500, amount: 10)
+collection.sort!(by: :price, order: :asc)
 
+collection.print_products
 
-puts 'Вот какие товары у нас есть:'
+input_user = nil
+current_sum = 0
+while input_user  != 0 do
+  input_user = gets.to_i
+  if input_user > 0
+    current_sum += collection.product_selection((input_user) - 1)
+    puts "Всего товаров на сумму: #{current_sum}"
+    collection.print_products
+  end
+end
+
 puts
-products.each { |product| puts product }
+puts "Вы купили: "
+puts
+puts collection.total_array
+puts
+puts "С Вас - #{current_sum}руб. Спасибо за покупки !"
